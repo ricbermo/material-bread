@@ -15,6 +15,7 @@ class IconButton extends Component {
     rippleColor: PropTypes.string,
     disabled: PropTypes.bool,
     testID: PropTypes.string,
+    iconComponent: PropTypes.func,
   };
   render() {
     const {
@@ -26,6 +27,7 @@ class IconButton extends Component {
       rippleColor,
       disabled,
       testID,
+      iconComponent,
     } = this.props;
     let rippleColorImplemented = color ? color : 'rgb(0, 0, 0)';
     if (rippleColor) rippleColorImplemented = rippleColor;
@@ -53,6 +55,7 @@ class IconButton extends Component {
           style={{
             backgroundColor: 'transparent',
           }}
+          iconComponent={iconComponent}
         />
       </Ripple>
     );
