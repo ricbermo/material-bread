@@ -6,6 +6,7 @@ import TextFieldUnderline from '../TextFieldUnderline/TextFieldUnderline';
 import TextFieldLabel from '../TextFieldLabel/TextFieldLabel';
 import TextFieldHelperText from '../TextFieldHelperText/TextFieldHelperText';
 import styles from './TextFieldFilled.styles';
+import { nonOutlinedStops } from '../TextFieldLabel/TextFieldLabel.constants';
 
 class TextFieldFilled extends Component {
   constructor(props) {
@@ -43,6 +44,7 @@ class TextFieldFilled extends Component {
 
   state = {
     height: 56,
+    labelHeight: 0,
   };
 
   componentDidUpdate(prevProps) {
@@ -100,14 +102,23 @@ class TextFieldFilled extends Component {
   }
 
   _updateTextInputHeight = e => {
+    const { labelHeight } = this.state;
     if (!this.props.multiline) return;
 
     const nativeHeight = e.nativeEvent.contentSize.height;
 
+    const heightOffset =
+      Platform.OS === 'ios' ? labelHeight + nonOutlinedStops.active + 8 : 0;
     this.setState({
-      height: nativeHeight < 56 ? 56 : nativeHeight,
+      height: nativeHeight < 56 ? 56 : nativeHeight + heightOffset,
     });
   };
+
+  _measureLabel = ({
+    nativeEvent: {
+      layout: { height },
+    },
+  }) => this.setState({ labelHeight: height });
 
   render() {
     const {
@@ -145,7 +156,13 @@ class TextFieldFilled extends Component {
     let paddingLeft = leadingIcon ? 44 : 12;
     if (prefix) paddingLeft = 32;
 
-    const platformStyles = Platform.OS == 'web' ? { outlineWidth: 0 } : {};
+    const platformStyles = Platform.select({
+      web: { outlineWidth: 0 },
+      ios: {
+        marginTop: 8,
+      },
+      android: {},
+    });
     return (
       <View
         style={[
@@ -165,6 +182,7 @@ class TextFieldFilled extends Component {
             dense={dense}
             prefix={prefix}
             type={'filled'}
+            onLayout={this._measureLabel}
           />
         ) : null}
         {leadingIcon ? this._renderLeadingIcon() : null}
@@ -180,7 +198,7 @@ class TextFieldFilled extends Component {
               paddingBottom: rest.multiline ? 8 : 0,
               paddingTop: paddingTop,
               paddingLeft: paddingLeft,
-              paddingRight: trailingIcon || suffix ? 36 : 0,
+              paddingRight: trailingIcon || suffix ? 36 : 12,
             },
             style,
           ]}
@@ -188,6 +206,7 @@ class TextFieldFilled extends Component {
           onFocus={handleFocus}
           onBlur={handleBlur}
           testID={testID}
+          scrollEnabled={false}
           {...rest}
         />
         {trailingIcon ? this._renderTrailingIcon() : null}
