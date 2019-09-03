@@ -28,6 +28,7 @@ class IconButton extends Component {
       disabled,
       testID,
       iconComponent,
+      ...rest
     } = this.props;
     let rippleColorImplemented = color ? color : 'rgb(0, 0, 0)';
     if (rippleColor) rippleColorImplemented = rippleColor;
@@ -47,7 +48,8 @@ class IconButton extends Component {
           },
           style,
         ]}
-        testID={testID}>
+        testID={testID}
+        {...rest}>
         <Icon
           name={name}
           color={color}

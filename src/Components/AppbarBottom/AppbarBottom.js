@@ -7,6 +7,9 @@ import styles from './AppbarBottom.styles';
 import AppbarBottomSVG from './AppbarBottom.svg.js';
 
 class AppbarBottom extends Component {
+  constructor(props) {
+    super(props);
+  }
   static propTypes = {
     color: PropTypes.string,
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -53,7 +56,7 @@ class AppbarBottom extends Component {
     if (!fab) return null;
 
     const fabRightStyle = {
-      right: fabCutout ? 17 : 16,
+      right: fabCutout ? 18 : 16,
     };
     const fabCenterStyle = {
       right: 'auto',

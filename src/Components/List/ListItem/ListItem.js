@@ -18,7 +18,7 @@ class ListItem extends Component {
     disabled: PropTypes.bool,
     selected: PropTypes.bool,
     text: PropTypes.string,
-    secondaryText: PropTypes.string,
+    secondaryText: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     media: PropTypes.node,
     icon: PropTypes.node,
     actionItem: PropTypes.node,
@@ -57,7 +57,7 @@ class ListItem extends Component {
           numberOfLines={1}>
           {text}
         </BodyText>
-        {secondaryText ? (
+        {typeof secondaryText === 'string' ? (
           <Caption
             style={[
               styles.listItemSecondaryText,
@@ -67,7 +67,9 @@ class ListItem extends Component {
             numberOfLines={2}>
             {secondaryText}
           </Caption>
-        ) : null}
+        ) : (
+          secondaryText
+        )}
       </View>
     );
   }
@@ -171,6 +173,7 @@ class ListItem extends Component {
       actionItem,
       leadingActionItem,
       rippleProps,
+      ...rest
     } = this.props;
     const { isPressed } = this.state;
 
@@ -206,7 +209,8 @@ class ListItem extends Component {
             },
             style,
           ]}
-          {...rippleProps}>
+          {...rippleProps}
+          {...rest}>
           {leadingActionItem ? this._renderLeadingActionItem() : null}
           {icon ? this._renderIcon() : null}
           {media ? media : null}

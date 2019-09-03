@@ -27,6 +27,7 @@ class TextFieldLabel extends Component {
     prefix: PropTypes.bool,
     theme: PropTypes.object,
     onLayout: PropTypes.func,
+    focusedLabelColor: PropTypes.string,
   };
 
   state = {
@@ -168,6 +169,7 @@ class TextFieldLabel extends Component {
       style,
       dense,
       onLayout,
+      focusedLabelColor,
     } = this.props;
     const { translateYAnimation, fontSizeAnimation } = this.state;
 
@@ -180,7 +182,7 @@ class TextFieldLabel extends Component {
 
     if (!labelColor) labelColor = 'rgba(0, 0, 0, 0.54)';
 
-    if (focused) labelColor = theme.primary.main;
+    if (focused) labelColor = focusedLabelColor || theme.primary.main;
 
     if (error) {
       labelColor = 'red';

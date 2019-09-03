@@ -30,6 +30,7 @@ class TextFieldFlat extends Component {
     underlineActiveColor: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.array,
+      PropTypes.string,
     ]),
     leadingIcon: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
     trailingIcon: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
@@ -39,6 +40,7 @@ class TextFieldFlat extends Component {
     suffix: PropTypes.node,
     prefix: PropTypes.node,
     testID: PropTypes.string,
+    focusedLabelColor: PropTypes.string,
   };
 
   static defaultProps = {
@@ -146,6 +148,7 @@ class TextFieldFlat extends Component {
       suffix,
       prefix,
       testID,
+      focusedLabelColor,
       ...rest
     } = this.props;
 
@@ -183,10 +186,11 @@ class TextFieldFlat extends Component {
             type={'flat'}
             labelColor={labelColor}
             style={labelStyle}
-            leadingIcon={leadingIcon}
+            leadingIcon={!!leadingIcon}
             dense={dense}
             prefix={prefix}
             onLayout={this._measureLabel}
+            focusedLabelColor={focusedLabelColor}
           />
         ) : null}
         {leadingIcon ? this._renderLeadingIcon() : null}
@@ -206,12 +210,12 @@ class TextFieldFlat extends Component {
             },
             style,
           ]}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           testID={testID}
           scrollEnabled={false}
           onContentSizeChange={e => this._updateTextInputHeight(e)}
           {...rest}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
         {trailingIcon ? this._renderTrailingIcon() : null}
         {suffix ? this._renderSuffix() : null}

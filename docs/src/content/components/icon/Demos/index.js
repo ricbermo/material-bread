@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ComponentDemoHeader } from '@components';
-import MoreActions from './MoreActions';
+
+import AnotherSourceDemo from './AnotherSourceDemo';
 
 export default class Demos extends Component {
   static propTypes = {
@@ -12,7 +13,7 @@ export default class Demos extends Component {
     return (
       <div>
         <ComponentDemoHeader pageHref={pageHref} />
-        <MoreActions pageHref={pageHref} />
+        <AnotherSourceDemo pageHref={pageHref} />
       </div>
     );
   }

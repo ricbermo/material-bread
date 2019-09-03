@@ -36,6 +36,7 @@ class TextFieldFilled extends Component {
     suffix: PropTypes.node,
     prefix: PropTypes.node,
     testID: PropTypes.string,
+    focusedLabelColor: PropTypes.string,
   };
 
   static defaultProps = {
@@ -142,6 +143,7 @@ class TextFieldFilled extends Component {
       suffix,
       prefix,
       testID,
+      focusedLabelColor,
       ...rest
     } = this.props;
 
@@ -178,11 +180,12 @@ class TextFieldFilled extends Component {
             value={rest.value && rest.value.length > 0}
             labelColor={labelColor}
             style={labelStyle}
-            leadingIcon={leadingIcon}
+            leadingIcon={!!leadingIcon}
             dense={dense}
             prefix={prefix}
             type={'filled'}
             onLayout={this._measureLabel}
+            focusedLabelColor={focusedLabelColor}
           />
         ) : null}
         {leadingIcon ? this._renderLeadingIcon() : null}
@@ -203,11 +206,11 @@ class TextFieldFilled extends Component {
             style,
           ]}
           onContentSizeChange={e => this._updateTextInputHeight(e)}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           testID={testID}
           scrollEnabled={false}
           {...rest}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
         {trailingIcon ? this._renderTrailingIcon() : null}
         {suffix ? this._renderSuffix() : null}

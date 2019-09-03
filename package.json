@@ -1,6 +1,6 @@
 {
   "name": "material-bread",
-  "version": "0.1.12",
+  "version": "0.2.0",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest -w 1 --forceExit",
@@ -59,7 +59,7 @@
     "react-native": "^0.59.10",
     "react-native-web": "^0.11.2",
     "react-native-svg": "^9.5.3",
-    "react-test-renderer": "^16.7.0"
+    "react-test-renderer": "16.6.3"
   },
   "peerDependencies": {
     "react": "*",
@@ -74,7 +74,7 @@
   "jest": {
     "preset": "react-native",
     "transformIgnorePatterns": [
-      "/node_modules/(?!(react-native|react-native-swipe-gestures|react-native-vector-icons)/)"
+      "/node_modules/(?!(react-native|react-native-swipe-gestures|react-native-vector-icons|react-native-svg)/)"
     ],
     "testMatch": [
       "<rootDir>/**/*.test.js"

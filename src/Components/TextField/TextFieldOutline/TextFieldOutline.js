@@ -32,6 +32,7 @@ class TextFieldOutlined extends Component {
     suffix: PropTypes.node,
     prefix: PropTypes.node,
     testID: PropTypes.string,
+    focusedLabelColor: PropTypes.string,
   };
 
   static defaultProps = {
@@ -126,6 +127,7 @@ class TextFieldOutlined extends Component {
       suffix,
       prefix,
       testID,
+      focusedLabelColor,
       ...rest
     } = this.props;
 
@@ -162,12 +164,12 @@ class TextFieldOutlined extends Component {
             type={'outlined'}
             labelColor={labelColor}
             style={labelStyle}
-            leadingIcon={leadingIcon}
+            leadingIcon={!!leadingIcon}
             dense={dense}
             prefix={prefix}
+            focusedLabelColor={focusedLabelColor}
           />
         ) : null}
-
         {leadingIcon ? this._renderLeadingIcon() : null}
         {prefix ? this._renderPrefix() : null}
         <TextInput
@@ -176,6 +178,7 @@ class TextFieldOutlined extends Component {
             styles.outlinedInput,
             platformStyles,
             {
+              borderWidth: focused ? 2 : 1,
               borderColor,
               minHeight: dense ? 40 : 56,
               height: height,
@@ -185,14 +188,13 @@ class TextFieldOutlined extends Component {
               paddingLeft: paddingLeft,
               paddingRight: trailingIcon || suffix ? 36 : 0,
             },
-
             style,
           ]}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           testID={testID}
           onContentSizeChange={e => this._updateTextInputHeight(e)}
           {...rest}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
         {trailingIcon ? this._renderTrailingIcon() : null}
         {suffix ? this._renderSuffix() : null}
