@@ -26,6 +26,7 @@ class TextFieldLabel extends Component {
     dense: PropTypes.bool,
     prefix: PropTypes.bool,
     theme: PropTypes.object,
+    onLayout: PropTypes.func,
     focusedLabelColor: PropTypes.string,
   };
 
@@ -167,6 +168,7 @@ class TextFieldLabel extends Component {
       theme,
       style,
       dense,
+      onLayout,
       focusedLabelColor,
     } = this.props;
     const { translateYAnimation, fontSizeAnimation } = this.state;
@@ -214,6 +216,7 @@ class TextFieldLabel extends Component {
             marginLeft: marginLeft,
           },
         ]}
+        onLayout={e => onLayout && onLayout(e)}
         pointerEvents="none">
         <Animated.Text
           style={[
