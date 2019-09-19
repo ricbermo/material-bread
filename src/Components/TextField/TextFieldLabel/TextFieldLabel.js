@@ -26,8 +26,8 @@ class TextFieldLabel extends Component {
     dense: PropTypes.bool,
     prefix: PropTypes.bool,
     theme: PropTypes.object,
-    onLayout: PropTypes.func,
     focusedLabelColor: PropTypes.string,
+    onLayout: PropTypes.func,
   };
 
   state = {
@@ -168,8 +168,8 @@ class TextFieldLabel extends Component {
       theme,
       style,
       dense,
-      onLayout,
       focusedLabelColor,
+      onLayout,
     } = this.props;
     const { translateYAnimation, fontSizeAnimation } = this.state;
 
