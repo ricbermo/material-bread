@@ -116,17 +116,20 @@ class Tabs extends Component {
   }
 
   getTabWidth(width) {
-    const { scrollEnabled, actionItems } = this.props;
+    const { scrollEnabled, actionItems, fixedTabWidth } = this.props;
+    const hasFixedTabWidth = !!fixedTabWidth;
+    let fixedWidth;
 
     if (!scrollEnabled) {
       let tabWidth = width / actionItems.length;
+      fixedWidth = fixedWidth * actionItems.length;
 
       this.setState({
-        tabWidth: tabWidth,
+        tabWidth: hasFixedTabWidth ? fixedTabWidth : tabWidth,
       });
     }
     this.setState({
-      barWidth: width,
+      barWidth: hasFixedTabWidth ? fixedWidth : width,
     });
   }
 
