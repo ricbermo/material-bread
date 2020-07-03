@@ -1547,6 +1547,7 @@ export interface TabsProps {
   style?: StyleProp<any>
   theme?: Theme
   testID?: string
+  fixedTabWidth?: number
 }
 
 export class Tabs extends React.Component<TabsProps> {
