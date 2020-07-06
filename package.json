@@ -76,8 +76,7 @@
     "react-native-web": "0.11.2",
     "react-native-svg": "^9.5.3"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.js",
   "jest": {
     "preset": "react-native",
     "transformIgnorePatterns": [
