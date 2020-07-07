@@ -117,19 +117,17 @@ class Tabs extends Component {
 
   getTabWidth(width) {
     const { scrollEnabled, actionItems, fixedTabWidth } = this.props;
-    const hasFixedTabWidth = !!fixedTabWidth;
-    let fixedWidth;
+    const fixedWidth = fixedTabWidth * actionItems.length;
 
     if (!scrollEnabled) {
       let tabWidth = width / actionItems.length;
-      fixedWidth = fixedWidth * actionItems.length;
 
       this.setState({
-        tabWidth: hasFixedTabWidth ? fixedTabWidth : tabWidth,
+        tabWidth: fixedTabWidth ? fixedTabWidth : tabWidth,
       });
     }
     this.setState({
-      barWidth: hasFixedTabWidth ? fixedWidth : width,
+      barWidth: fixedTabWidth ? fixedWidth : width,
     });
   }
 
@@ -151,7 +149,6 @@ class Tabs extends Component {
       fixedTabWidth,
     } = this.props;
     const { tabWidth, barWidth } = this.state;
-    const hasFixedTabWidth = !!fixedTabWidth;
 
     let tabWidthImplemented = !scrollEnabled ? tabWidth : barWidth * 0.4;
     if (tabWidthImplemented < 90) tabWidthImplemented = 90;
@@ -168,7 +165,7 @@ class Tabs extends Component {
               if (item.onPress) item.onPress();
             }}
             active={index === selectedIndex}
-            tabWidth={hasFixedTabWidth ? fixedTabWidth : tabWidthImplemented}
+            tabWidth={fixedTabWidth ? fixedTabWidth : tabWidthImplemented}
           />
         );
       } else {
@@ -188,7 +185,6 @@ class Tabs extends Component {
   _renderContent() {
     const { scrollEnabled, underlineColor, fixedTabWidth } = this.props;
     const { tabWidth, indicatorPosition, barWidth } = this.state;
-    const hasFixedTabWidth = !!fixedTabWidth;
 
     let tabWidthImplemented = !scrollEnabled ? tabWidth : barWidth * 0.4;
     if (tabWidthImplemented < 90) tabWidthImplemented = 90;
@@ -200,7 +196,7 @@ class Tabs extends Component {
         <Underline
           color={underlineColor}
           value={indicatorPosition}
-          tabWidth={hasFixedTabWidth ? fixedTabWidth : tabWidthImplemented}
+          tabWidth={fixedTabWidth ? fixedTabWidth : tabWidthImplemented}
         />
       </Fragment>
     );
