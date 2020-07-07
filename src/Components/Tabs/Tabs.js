@@ -21,6 +21,7 @@ class Tabs extends Component {
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     theme: PropTypes.object,
     testID: PropTypes.string,
+    fixedTabWidth: PropTypes.number,
   };
 
   static defaultProps = {
@@ -115,17 +116,18 @@ class Tabs extends Component {
   }
 
   getTabWidth(width) {
-    const { scrollEnabled, actionItems } = this.props;
+    const { scrollEnabled, actionItems, fixedTabWidth } = this.props;
+    const fixedWidth = fixedTabWidth * actionItems.length;
 
     if (!scrollEnabled) {
       let tabWidth = width / actionItems.length;
 
       this.setState({
-        tabWidth: tabWidth,
+        tabWidth: fixedTabWidth ? fixedTabWidth : tabWidth,
       });
     }
     this.setState({
-      barWidth: width,
+      barWidth: fixedTabWidth ? fixedWidth : width,
     });
   }
 
@@ -144,6 +146,7 @@ class Tabs extends Component {
       actionItems,
       handleChange,
       selectedIndex,
+      fixedTabWidth,
     } = this.props;
     const { tabWidth, barWidth } = this.state;
 
@@ -162,7 +165,7 @@ class Tabs extends Component {
               if (item.onPress) item.onPress();
             }}
             active={index === selectedIndex}
-            tabWidth={tabWidthImplemented}
+            tabWidth={fixedTabWidth ? fixedTabWidth : tabWidthImplemented}
           />
         );
       } else {
@@ -180,7 +183,7 @@ class Tabs extends Component {
   }
 
   _renderContent() {
-    const { scrollEnabled, underlineColor } = this.props;
+    const { scrollEnabled, underlineColor, fixedTabWidth } = this.props;
     const { tabWidth, indicatorPosition, barWidth } = this.state;
 
     let tabWidthImplemented = !scrollEnabled ? tabWidth : barWidth * 0.4;
@@ -193,7 +196,7 @@ class Tabs extends Component {
         <Underline
           color={underlineColor}
           value={indicatorPosition}
-          tabWidth={tabWidthImplemented}
+          tabWidth={fixedTabWidth ? fixedTabWidth : tabWidthImplemented}
         />
       </Fragment>
     );
