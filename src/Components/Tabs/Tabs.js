@@ -59,7 +59,12 @@ class Tabs extends Component {
   }
 
   getAnimateValues() {
-    const { selectedIndex, scrollEnabled, actionItems } = this.props;
+    const {
+      selectedIndex,
+      scrollEnabled,
+      actionItems,
+      fixedTabWidth,
+    } = this.props;
     const { tabWidth, barWidth } = this.state;
 
     const index = selectedIndex;
@@ -73,6 +78,7 @@ class Tabs extends Component {
       };
     }
 
+    const fixedIndicatorPosition = index * scrollValue;
     switch (index) {
       case 0: // First tab
         return {
@@ -81,20 +87,24 @@ class Tabs extends Component {
         };
       case 1: // Second tab
         return {
-          indicatorPosition: barWidth * 0.5 - scrollValue / 4,
+          indicatorPosition: fixedTabWidth
+            ? fixedIndicatorPosition
+            : barWidth * 0.5 - scrollValue / 4,
           scrollPosition: scrollValue * 0.25,
         };
       case actionItems.length - 1: // Last tab
         return {
-          indicatorPosition:
-            scrollValue * (index - 1) + (barWidth * 0.5 - scrollValue / 4),
-          scrollPosition: scrollValue * (index - 2) + scrollValue * 0.5,
+          indicatorPosition: fixedTabWidth
+            ? fixedIndicatorPosition
+            : scrollValue * (index - 1) + (barWidth * 0.5 - scrollValue / 4),
+          scrollPosition: scrollValue * (index - 1) + scrollValue * 0.5,
         };
       default:
         // Any tabs between second and last
         return {
-          indicatorPosition:
-            scrollValue * (index - 1) + (barWidth * 0.5 - scrollValue / 4),
+          indicatorPosition: fixedTabWidth
+            ? fixedIndicatorPosition
+            : scrollValue * (index - 1) + (barWidth * 0.5 - scrollValue / 4),
           scrollPosition: scrollValue * 0.25 + scrollValue * (index - 1),
         };
     }
