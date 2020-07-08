@@ -97,7 +97,7 @@ class Tabs extends Component {
           indicatorPosition: fixedTabWidth
             ? fixedIndicatorPosition
             : scrollValue * (index - 1) + (barWidth * 0.5 - scrollValue / 4),
-          scrollPosition: scrollValue * (index - 2) + scrollValue * 0.5,
+          scrollPosition: scrollValue * (index - 1) + scrollValue * 0.5,
         };
       default:
         // Any tabs between second and last
