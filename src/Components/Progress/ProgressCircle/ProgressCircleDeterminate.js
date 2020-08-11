@@ -69,7 +69,7 @@ class ProgressCircleDeterminate extends Component {
 
   getHalfCircleContainerStyle() {
     return {
-      width: this.props.size / 2,
+      width: this.props.size / 2.005,
       height: this.props.size,
       overflow: 'hidden',
     };
