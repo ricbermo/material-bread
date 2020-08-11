@@ -115,7 +115,7 @@ class ProgressCircleDeterminate extends Component {
         pointerEvents="none"
         style={[
           this.getHalfCircleContainerStyle(),
-          { transform: [{ scaleX: isFlipped ? -1 : 1 }] },
+          { transform: [{ scaleX: isFlipped ? -1.015 : 1.015 }] },
         ]}>
         <Animated.View
           useNativeDriver={false}
