@@ -118,10 +118,7 @@ class ListItem extends Component {
 
     const rippleColor =
       rippleProps && rippleProps.rippleColor
-        ? color(rippleProps.rippleColor)
-            .alpha(0.12)
-            .rgb()
-            .string()
+        ? color(rippleProps.rippleColor).alpha(0.12).rgb().string()
         : 'rgba(0, 0, 0, 0.12)';
 
     implementedBackgroundColor = selected
@@ -141,27 +138,18 @@ class ListItem extends Component {
     } else {
       if (color(bgColor).isDark()) {
         implementedColor = toggle
-          ? color(bgColor)
-              .lighten(0.15)
-              .rgb()
-              .string()
+          ? color(bgColor).lighten(0.15).rgb().string()
           : null;
       } else {
         implementedColor = toggle
-          ? color(bgColor)
-              .darken(0.15)
-              .rgb()
-              .string()
+          ? color(bgColor).darken(0.15).rgb().string()
           : null;
       }
     }
 
     if (rippleProps && rippleProps.rippleColor) {
       implementedColor = toggle
-        ? color(rippleProps.rippleColor)
-            .alpha(0.12)
-            .rgb()
-            .string()
+        ? color(rippleProps.rippleColor).alpha(0.12).rgb().string()
         : null;
     }
 
@@ -192,10 +180,10 @@ class ListItem extends Component {
         onHoverOut={() => this.handleHover(false)}>
         <Ripple
           onAnimationEnd={() => {
-            if (isPressed && onPress) {
-              onPress();
-              this.setState({ isPressed: false });
-            }
+            // if (isPressed && onPress) {
+            //   onPress();
+            //   this.setState({ isPressed: false });
+            // }
           }}
           rippleDuration={200}
           disabled={disabled}

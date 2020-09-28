@@ -231,7 +231,7 @@ var ListItem = (function (_Component) {
         var _this2 = this;
         var _this$props3 = this.props,
           style = _this$props3.style,
-          onPress = _this$props3.onPress,
+          onPressProp = _this$props3.onPress,
           disabled = _this$props3.disabled,
           children = _this$props3.children,
           media = _this$props3.media,
@@ -267,12 +267,19 @@ var ListItem = (function (_Component) {
             _Ripple.default,
             (0, _extends2.default)(
               {
-                onAnimationEnd: function onAnimationEnd() {},
+                onAnimationEnd: function onAnimationEnd() {
+                  // if (isPressed && onPress) {
+                  //   onPress();
+                  //   _this2.setState({ isPressed: false });
+                  // }
+                },
                 rippleDuration: 200,
                 disabled: disabled,
                 rippleColor: 'rgba(0,0,0,.8)',
                 onPress: function onPress() {
-                  return onPress();
+                  if (onPressProp) {
+                    onPressProp();
+                  }
                 },
                 style: [
                   {
@@ -346,4 +353,3 @@ var ListItem = (function (_Component) {
 });
 var _default = (0, _withTheme.default)(ListItem);
 exports.default = _default;
-
