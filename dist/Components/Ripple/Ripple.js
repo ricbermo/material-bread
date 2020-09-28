@@ -99,7 +99,6 @@ var Ripple = (function (_PureComponent) {
     _this.mounted = false;
     _this.rippleFades =
       _this.props.rippleFades && !_this.props.displayUntilPressOut;
-    _this.isPressingIn = false;
     _this.animationWaitingForEnd = false;
     _this.state = { width: 0, height: 0, ripples: [] };
     return _this;
@@ -184,14 +183,9 @@ var Ripple = (function (_PureComponent) {
     {
       key: 'onAnimationEnd',
       value: function onAnimationEnd(event) {
-        if (this.props.displayUntilPressOut && this.isPressingIn) {
-          this.animationWaitingForEnd = true;
-          return;
-        }
         if (this.props.onAnimationEnd) {
           this.props.onAnimationEnd(event);
         }
-        this.forceAnimationEnd();
       },
     },
     {
