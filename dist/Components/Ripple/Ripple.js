@@ -92,6 +92,9 @@ var Ripple = (function (_PureComponent) {
     _this.onLongPress = _this.onLongPress.bind(
       (0, _assertThisInitialized2.default)(_this),
     );
+    _this.onAnimationEnd = _this.onAnimationEnd.bind(
+      (0, _assertThisInitialized2.default)(_this),
+    );
     _this.unique = 0;
     _this.mounted = false;
     _this.rippleFades =
@@ -176,6 +179,19 @@ var Ripple = (function (_PureComponent) {
         var x = e.nativeEvent.pageX - rect.left;
         var y = e.nativeEvent.changedTouches[0].clientY - rect.top;
         return { x: x, y: y };
+      },
+    },
+    {
+      key: 'onAnimationEnd',
+      value: function onAnimationEnd(event) {
+        if (this.props.displayUntilPressOut && this.isPressingIn) {
+          this.animationWaitingForEnd = true;
+          return;
+        }
+        if (this.props.onAnimationEnd) {
+          this.props.onAnimationEnd(event);
+        }
+        this.forceAnimationEnd();
       },
     },
     {
@@ -293,4 +309,3 @@ exports.default = Ripple;
     },
   ),
 );
-
