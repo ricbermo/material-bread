@@ -16,12 +16,12 @@ class Tabs extends Component {
     selectedIndex: PropTypes.number,
     backgroundColor: PropTypes.string,
     underlineColor: PropTypes.string,
-    underlineHeight: PropTypes.number,
     scrollEnabled: PropTypes.bool,
     handleChange: PropTypes.func,
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     theme: PropTypes.object,
     testID: PropTypes.string,
+    fixedTabWidth: PropTypes.number,
   };
 
   static defaultProps = {
@@ -31,9 +31,9 @@ class Tabs extends Component {
   };
 
   state = {
-    tabWidth: 0,
-    barWidth: 0,
-    indicatorPosition: new Animated.Value(0),
+    tabWidth: null,
+    barWidth: null,
+    indicatorPosition: null,
   };
 
   componentDidUpdate(prevProps) {
@@ -48,19 +48,34 @@ class Tabs extends Component {
     this.selectTab();
   }
 
-  shouldComponentUpdate(nextProps) {
-    const { actionItems } = this.props;
+  shouldComponentUpdate(nextProps, nextState) {
+    const { actionItems, selectedIndex } = this.props;
+    const { tabWidth, barWidth } = this.state;
 
-    return (
-      actionItems.length !== nextProps.actionItems.length ||
-      (nextProps.selectedIndex < nextProps.actionItems.length &&
-        nextProps.selectedIndex >= 0)
-    );
+    const didActionsLengthChange =
+      actionItems.length !== nextProps.actionItems.length;
+
+    const didIndexChange =
+      selectedIndex !== nextProps.selectedIndex &&
+      nextProps.selectedIndex < nextProps.actionItems.length &&
+      nextProps.selectedIndex >= 0;
+
+    const didWidthChange =
+      tabWidth !== nextState.tabWdith || barWidth !== nextState.barWidth;
+
+    return didActionsLengthChange || didIndexChange || didWidthChange;
   }
 
   getAnimateValues() {
-    const { selectedIndex, scrollEnabled, actionItems } = this.props;
+    const {
+      selectedIndex,
+      scrollEnabled,
+      actionItems,
+      fixedTabWidth,
+    } = this.props;
     const { tabWidth, barWidth } = this.state;
+
+    if ((!scrollEnabled && tabWidth == null) || barWidth == null) return false;
 
     const index = selectedIndex;
     let scrollValue = !scrollEnabled ? tabWidth : barWidth * 0.4;
@@ -73,6 +88,7 @@ class Tabs extends Component {
       };
     }
 
+    const fixedIndicatorPosition = index * scrollValue;
     switch (index) {
       case 0: // First tab
         return {
@@ -81,62 +97,73 @@ class Tabs extends Component {
         };
       case 1: // Second tab
         return {
-          indicatorPosition: barWidth * 0.5 - scrollValue / 4,
+          indicatorPosition: fixedTabWidth
+            ? fixedIndicatorPosition
+            : barWidth * 0.5 - scrollValue / 4,
           scrollPosition: scrollValue * 0.25,
         };
       case actionItems.length - 1: // Last tab
         return {
-          indicatorPosition:
-            scrollValue * (index - 1) + (barWidth * 0.5 - scrollValue / 4),
-          scrollPosition: scrollValue * (index - 2) + scrollValue * 0.5,
+          indicatorPosition: fixedTabWidth
+            ? fixedIndicatorPosition
+            : scrollValue * (index - 1) + (barWidth * 0.5 - scrollValue / 4),
+          scrollPosition: scrollValue * (index - 1) + scrollValue * 0.5,
         };
       default:
         // Any tabs between second and last
         return {
-          indicatorPosition:
-            scrollValue * (index - 1) + (barWidth * 0.5 - scrollValue / 4),
+          indicatorPosition: fixedTabWidth
+            ? fixedIndicatorPosition
+            : scrollValue * (index - 1) + (barWidth * 0.5 - scrollValue / 4),
           scrollPosition: scrollValue * 0.25 + scrollValue * (index - 1),
         };
     }
   }
 
   selectTab() {
-    const { indicatorPosition, scrollPosition } = this.getAnimateValues();
+    const animatedValues = this.getAnimateValues();
+    const hasIndicatorPosition = !!this.state.indicatorPosition;
 
-    Animated.spring(this.state.indicatorPosition, {
-      toValue: I18nManager.isRTL ? -indicatorPosition : indicatorPosition,
-      tension: 300,
-      friction: 20,
-      useNativeDriver: true,
-    }).start();
+    if (animatedValues) {
+      const { indicatorPosition, scrollPosition } = animatedValues;
 
-    if (this.scrollView) {
-      this.scrollView.scrollTo({ x: scrollPosition });
+      if (!hasIndicatorPosition) {
+        this.setState({
+          indicatorPosition: new Animated.Value(indicatorPosition),
+        });
+      } else {
+        Animated.spring(this.state.indicatorPosition, {
+          toValue: I18nManager.isRTL ? -indicatorPosition : indicatorPosition,
+          tension: 300,
+          friction: 20,
+          useNativeDriver: true,
+        }).start();
+      }
+
+      if (this.scrollView) {
+        this.scrollView.scrollTo({ x: scrollPosition });
+      }
     }
   }
 
   getTabWidth(width) {
-    const { scrollEnabled, actionItems } = this.props;
+    const { scrollEnabled, actionItems, fixedTabWidth } = this.props;
+    const fixedWidth = fixedTabWidth * actionItems.length;
+    const barWidth = fixedTabWidth ? fixedWidth : width;
 
     if (!scrollEnabled) {
-      let tabWidth = width / actionItems.length;
+      const tabWidth = fixedTabWidth || width / actionItems.length;
 
-      this.setState({
-        tabWidth: tabWidth,
-      });
+      this.setState({ tabWidth });
     }
-    this.setState({
-      barWidth: width,
-    });
+
+    this.setState({ barWidth });
   }
 
   getColor() {
     const { backgroundColor, theme } = this.props;
-    let implementedColor = backgroundColor
-      ? backgroundColor
-      : theme.primary.main;
 
-    return implementedColor;
+    return backgroundColor || theme.primary.main;
   }
 
   _renderTabs() {
@@ -145,10 +172,18 @@ class Tabs extends Component {
       actionItems,
       handleChange,
       selectedIndex,
+      fixedTabWidth,
     } = this.props;
     const { tabWidth, barWidth } = this.state;
 
-    let tabWidthImplemented = !scrollEnabled ? tabWidth : barWidth * 0.4;
+    const selectedTabWidth = fixedTabWidth ? fixedTabWidth : tabWidth;
+    const selectedBarWidth = fixedTabWidth
+      ? fixedTabWidth * actionItems.length
+      : barWidth;
+
+    let tabWidthImplemented = !scrollEnabled
+      ? selectedTabWidth
+      : selectedBarWidth * 0.4;
     if (tabWidthImplemented < 90) tabWidthImplemented = 90;
 
     return actionItems.map((item, index) => {
@@ -181,22 +216,34 @@ class Tabs extends Component {
   }
 
   _renderContent() {
-    const { scrollEnabled, underlineColor, underlineHeight } = this.props;
+    const {
+      scrollEnabled,
+      underlineColor,
+      fixedTabWidth,
+      actionItems,
+    } = this.props;
     const { tabWidth, indicatorPosition, barWidth } = this.state;
 
-    let tabWidthImplemented = !scrollEnabled ? tabWidth : barWidth * 0.4;
+    const selectedTabWidth = fixedTabWidth ? fixedTabWidth : tabWidth;
+    const selectedBarWidth = fixedTabWidth
+      ? fixedTabWidth * actionItems.length
+      : barWidth;
+
+    let tabWidthImplemented = !scrollEnabled
+      ? selectedTabWidth
+      : selectedBarWidth * 0.4;
     if (tabWidthImplemented < 90) tabWidthImplemented = 90;
 
     return (
       <Fragment>
         <View style={styles.tabsWrapper}>{this._renderTabs()}</View>
-
-        <Underline
-          underlineHeight={underlineHeight}
-          color={underlineColor}
-          value={indicatorPosition}
-          tabWidth={tabWidthImplemented}
-        />
+        {indicatorPosition && (
+          <Underline
+            color={underlineColor}
+            value={indicatorPosition}
+            tabWidth={tabWidthImplemented}
+          />
+        )}
       </Fragment>
     );
   }

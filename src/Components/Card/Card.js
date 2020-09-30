@@ -25,7 +25,7 @@ class Card extends Component {
   _renderRipple() {
     const { children, onPress, rippleProps } = this.props;
     return (
-      <Ripple Press={onPress} {...rippleProps}>
+      <Ripple onPress={onPress} {...rippleProps}>
         {children}
       </Ripple>
     );

@@ -118,7 +118,10 @@ class ListItem extends Component {
 
     const rippleColor =
       rippleProps && rippleProps.rippleColor
-        ? color(rippleProps.rippleColor).alpha(0.12).rgb().string()
+        ? color(rippleProps.rippleColor)
+            .alpha(0.12)
+            .rgb()
+            .string()
         : 'rgba(0, 0, 0, 0.12)';
 
     implementedBackgroundColor = selected
@@ -138,18 +141,27 @@ class ListItem extends Component {
     } else {
       if (color(bgColor).isDark()) {
         implementedColor = toggle
-          ? color(bgColor).lighten(0.15).rgb().string()
+          ? color(bgColor)
+              .lighten(0.15)
+              .rgb()
+              .string()
           : null;
       } else {
         implementedColor = toggle
-          ? color(bgColor).darken(0.15).rgb().string()
+          ? color(bgColor)
+              .darken(0.15)
+              .rgb()
+              .string()
           : null;
       }
     }
 
     if (rippleProps && rippleProps.rippleColor) {
       implementedColor = toggle
-        ? color(rippleProps.rippleColor).alpha(0.12).rgb().string()
+        ? color(rippleProps.rippleColor)
+            .alpha(0.12)
+            .rgb()
+            .string()
         : null;
     }
 
@@ -169,7 +181,6 @@ class ListItem extends Component {
       rippleProps,
       ...rest
     } = this.props;
-    const { isPressed } = this.state;
 
     let contentMargin = media ? 16 : 0;
     if (icon || leadingActionItem) contentMargin = 32;
@@ -179,16 +190,10 @@ class ListItem extends Component {
         onHoverIn={() => this.handleHover(true)}
         onHoverOut={() => this.handleHover(false)}>
         <Ripple
-          onAnimationEnd={() => {
-            // if (isPressed && onPress) {
-            //   onPress();
-            //   this.setState({ isPressed: false });
-            // }
-          }}
           rippleDuration={200}
           disabled={disabled}
           rippleColor={'rgba(0,0,0,.8)'}
-          onPress={() => this.setState({ isPressed: true })}
+          onPress={event => onPress && onPress(event)}
           style={[
             {
               backgroundColor: this.getBackgroundColor(),

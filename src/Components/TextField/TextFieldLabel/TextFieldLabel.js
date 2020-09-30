@@ -215,7 +215,7 @@ class TextFieldLabel extends Component {
             marginLeft: marginLeft,
           },
         ]}
-        onLayout={(e) => onLayout && onLayout(e)}
+        onLayout={e => onLayout && onLayout(e)}
         pointerEvents="none">
         <Animated.Text
           style={[
