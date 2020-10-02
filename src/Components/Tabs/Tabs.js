@@ -31,9 +31,9 @@ class Tabs extends Component {
   };
 
   state = {
-    tabWidth: 0,
-    barWidth: 0,
-    indicatorPosition: new Animated.Value(0),
+    tabWidth: null,
+    barWidth: null,
+    indicatorPosition: null,
   };
 
   componentDidUpdate(prevProps) {
@@ -48,14 +48,22 @@ class Tabs extends Component {
     this.selectTab();
   }
 
-  shouldComponentUpdate(nextProps) {
-    const { actionItems } = this.props;
+  shouldComponentUpdate(nextProps, nextState) {
+    const { actionItems, selectedIndex } = this.props;
+    const { tabWidth, barWidth } = this.state;
 
-    return (
-      actionItems.length !== nextProps.actionItems.length ||
-      (nextProps.selectedIndex < nextProps.actionItems.length &&
-        nextProps.selectedIndex >= 0)
-    );
+    const didActionsLengthChange =
+      actionItems.length !== nextProps.actionItems.length;
+
+    const didIndexChange =
+      selectedIndex !== nextProps.selectedIndex &&
+      nextProps.selectedIndex < nextProps.actionItems.length &&
+      nextProps.selectedIndex >= 0;
+
+    const didWidthChange =
+      tabWidth !== nextState.tabWdith || barWidth !== nextState.barWidth;
+
+    return didActionsLengthChange || didIndexChange || didWidthChange;
   }
 
   getAnimateValues() {
@@ -66,6 +74,8 @@ class Tabs extends Component {
       fixedTabWidth,
     } = this.props;
     const { tabWidth, barWidth } = this.state;
+
+    if ((!scrollEnabled && tabWidth == null) || barWidth == null) return false;
 
     const index = selectedIndex;
     let scrollValue = !scrollEnabled ? tabWidth : barWidth * 0.4;
@@ -111,43 +121,49 @@ class Tabs extends Component {
   }
 
   selectTab() {
-    const { indicatorPosition, scrollPosition } = this.getAnimateValues();
+    const animatedValues = this.getAnimateValues();
+    const hasIndicatorPosition = !!this.state.indicatorPosition;
 
-    Animated.spring(this.state.indicatorPosition, {
-      toValue: I18nManager.isRTL ? -indicatorPosition : indicatorPosition,
-      tension: 300,
-      friction: 20,
-      useNativeDriver: true,
-    }).start();
+    if (animatedValues) {
+      const { indicatorPosition, scrollPosition } = animatedValues;
 
-    if (this.scrollView) {
-      this.scrollView.scrollTo({ x: scrollPosition });
+      if (!hasIndicatorPosition) {
+        this.setState({
+          indicatorPosition: new Animated.Value(indicatorPosition),
+        });
+      } else {
+        Animated.spring(this.state.indicatorPosition, {
+          toValue: I18nManager.isRTL ? -indicatorPosition : indicatorPosition,
+          tension: 300,
+          friction: 20,
+          useNativeDriver: true,
+        }).start();
+      }
+
+      if (this.scrollView) {
+        this.scrollView.scrollTo({ x: scrollPosition });
+      }
     }
   }
 
   getTabWidth(width) {
     const { scrollEnabled, actionItems, fixedTabWidth } = this.props;
     const fixedWidth = fixedTabWidth * actionItems.length;
+    const barWidth = fixedTabWidth ? fixedWidth : width;
 
     if (!scrollEnabled) {
-      let tabWidth = width / actionItems.length;
+      const tabWidth = fixedTabWidth || width / actionItems.length;
 
-      this.setState({
-        tabWidth: fixedTabWidth ? fixedTabWidth : tabWidth,
-      });
+      this.setState({ tabWidth });
     }
-    this.setState({
-      barWidth: fixedTabWidth ? fixedWidth : width,
-    });
+
+    this.setState({ barWidth });
   }
 
   getColor() {
     const { backgroundColor, theme } = this.props;
-    let implementedColor = backgroundColor
-      ? backgroundColor
-      : theme.primary.main;
 
-    return implementedColor;
+    return backgroundColor || theme.primary.main;
   }
 
   _renderTabs() {
@@ -221,12 +237,13 @@ class Tabs extends Component {
     return (
       <Fragment>
         <View style={styles.tabsWrapper}>{this._renderTabs()}</View>
-
-        <Underline
-          color={underlineColor}
-          value={indicatorPosition}
-          tabWidth={tabWidthImplemented}
-        />
+        {indicatorPosition && (
+          <Underline
+            color={underlineColor}
+            value={indicatorPosition}
+            tabWidth={tabWidthImplemented}
+          />
+        )}
       </Fragment>
     );
   }

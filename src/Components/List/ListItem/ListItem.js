@@ -181,7 +181,6 @@ class ListItem extends Component {
       rippleProps,
       ...rest
     } = this.props;
-    const { isPressed } = this.state;
 
     let contentMargin = media ? 16 : 0;
     if (icon || leadingActionItem) contentMargin = 32;
@@ -191,16 +190,10 @@ class ListItem extends Component {
         onHoverIn={() => this.handleHover(true)}
         onHoverOut={() => this.handleHover(false)}>
         <Ripple
-          onAnimationEnd={() => {
-            if (isPressed && onPress) {
-              onPress();
-              this.setState({ isPressed: false });
-            }
-          }}
           rippleDuration={200}
           disabled={disabled}
           rippleColor={'rgba(0,0,0,.8)'}
-          onPress={() => this.setState({ isPressed: true })}
+          onPress={event => onPress && onPress(event)}
           style={[
             {
               backgroundColor: this.getBackgroundColor(),
